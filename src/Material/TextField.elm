@@ -1,6 +1,7 @@
 module Material.TextField exposing
     ( Config, config
     , setOnInput
+    , setOnFocus
     , setOnBlur
     , setOnChange
     , setLabel
@@ -85,6 +86,7 @@ module Material.TextField exposing
 ## Configuration Options
 
 @docs setOnInput
+@docs setOnFocus
 @docs setOnBlur
 @docs setOnChange
 @docs setLabel
@@ -293,6 +295,7 @@ type Config msg
         , endAligned : Bool
         , additionalAttributes : List (Html.Attribute msg)
         , onInput : Maybe (String -> msg)
+        , onFocus : Maybe msg
         , onBlur : Maybe msg
         , onChange : Maybe (String -> msg)
         }
@@ -324,6 +327,7 @@ config =
         , endAligned = False
         , additionalAttributes = []
         , onInput = Nothing
+        , onFocus = Nothing
         , onBlur = Nothing
         , onChange = Nothing
         }
@@ -471,6 +475,13 @@ setAttributes additionalAttributes (Config config_) =
 setOnInput : (String -> msg) -> Config msg -> Config msg
 setOnInput onInput (Config config_) =
     Config { config_ | onInput = Just onInput }
+
+
+{-| Specify a message when the user moves focus to from the text field
+-}
+setOnFocus : msg -> Config msg -> Config msg
+setOnFocus onFocus (Config config_) =
+    Config { config_ | onFocus = Just onFocus }
 
 
 {-| Specify a message when the user moves focus away from the text field
@@ -835,6 +846,11 @@ inputHandler (Config { onInput }) =
     Maybe.map Html.Events.onInput onInput
 
 
+focusHandler : Config msg -> Maybe (Html.Attribute msg)
+focusHandler (Config { onFocus }) =
+    Maybe.map Html.Events.onFocus onFocus
+
+
 blurHandler : Config msg -> Maybe (Html.Attribute msg)
 blurHandler (Config { onBlur }) =
     Maybe.map Html.Events.onBlur onBlur
@@ -855,6 +871,7 @@ inputElt config_ =
             , ariaLabelAttr config_
             , placeholderAttr config_
             , inputHandler config_
+            , focusHandler config_
             , blurHandler config_
             , changeHandler config_
             , minLengthAttr config_
