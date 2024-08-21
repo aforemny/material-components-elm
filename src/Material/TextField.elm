@@ -477,7 +477,7 @@ setOnInput onInput (Config config_) =
     Config { config_ | onInput = Just onInput }
 
 
-{-| Specify a message when the user moves focus to from the text field
+{-| Specify a message when the user moves focus to the text field
 -}
 setOnFocus : msg -> Config msg -> Config msg
 setOnFocus onFocus (Config config_) =
